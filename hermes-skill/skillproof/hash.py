@@ -1,0 +1,136 @@
+"""
+SkillProof - Content Hashing
+============================
+
+Computes a deterministic keccak256 hash of a Hermes skill folder.
+
+Why deterministic?
+- Same content = same hash, always
+- Even if files are in different order, whitespace differs, etc.
+- The hash is the skill's "fingerprint" on the blockchain.
+
+How it works:
+1. Find all files in the skill folder (excluding .venv, __pycache__, etc.)
+2. Sort them by filename (deterministic order)
+3. Read each file, normalize whitespace
+4. Concatenate: filename + content for each file
+5. Hash the result with keccak256 (same algorithm Ethereum uses)
+
+Usage:
+    python3 hash.py /path/to/skill-folder
+"""
+
+import sys
+import os
+from pathlib import Path
+from eth_utils import keccak
+
+
+# Files/folders we ignore when hashing
+IGNORE_PATTERNS = {
+    ".venv", "__pycache__", ".git", "node_modules",
+    ".DS_Store", ".pytest_cache", "*.pyc"
+}
+
+
+def should_ignore(path: Path) -> bool:
+    """Check if a path should be ignored when hashing."""
+    for part in path.parts:
+        if part in IGNORE_PATTERNS:
+            return True
+        if part.startswith(".") and part not in {".env"}:
+            return True
+    return False
+
+
+def normalize_content(content: bytes) -> bytes:
+    """
+    Normalize file content for deterministic hashing.
+    - Convert CRLF (Windows) to LF (Unix)
+    - Strip trailing whitespace from each line
+    - Strip leading/trailing whitespace from whole file
+    """
+    text = content.decode("utf-8", errors="replace")
+    # Normalize line endings
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    # Strip trailing whitespace from each line
+    lines = [line.rstrip() for line in text.split("\n")]
+    # Rejoin and strip whole file
+    text = "\n".join(lines).strip()
+    return text.encode("utf-8")
+
+
+def compute_skill_hash(skill_folder: Path) -> tuple[str, list[str]]:
+    """
+    Compute deterministic keccak256 hash of a skill folder.
+
+    Returns:
+        (hash_hex, list_of_files_included)
+    """
+    if not skill_folder.exists():
+        raise FileNotFoundError(f"Folder not found: {skill_folder}")
+
+    if not skill_folder.is_dir():
+        raise NotADirectoryError(f"Not a folder: {skill_folder}")
+
+    # SKILL.md is mandatory
+    skill_md = skill_folder / "SKILL.md"
+    if not skill_md.exists():
+        raise FileNotFoundError(
+            f"No SKILL.md found in {skill_folder}. "
+            f"Hermes skills require a SKILL.md manifest."
+        )
+
+    # Collect all files (recursively), sorted for determinism
+    all_files = []
+    for path in sorted(skill_folder.rglob("*")):
+        if path.is_file() and not should_ignore(path.relative_to(skill_folder)):
+            all_files.append(path)
+
+    # Build the content stream
+    stream = b""
+    files_included = []
+    for path in all_files:
+        rel_path = path.relative_to(skill_folder).as_posix()
+        files_included.append(rel_path)
+
+        # Add filename to stream (so renaming a file changes the hash)
+        stream += rel_path.encode("utf-8") + b"\n"
+
+        # Add normalized content
+        with open(path, "rb") as f:
+            content = f.read()
+        stream += normalize_content(content) + b"\n---END-OF-FILE---\n"
+
+    # Compute keccak256
+    hash_bytes = keccak(stream)
+    hash_hex = "0x" + hash_bytes.hex()
+
+    return hash_hex, files_included
+
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 hash.py /path/to/skill-folder")
+        sys.exit(1)
+
+    skill_folder = Path(sys.argv[1]).resolve()
+
+    try:
+        hash_hex, files = compute_skill_hash(skill_folder)
+    except (FileNotFoundError, NotADirectoryError) as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
+    print(f"Skill folder: {skill_folder}")
+    print(f"Files included: {len(files)}")
+    for f in files:
+        print(f"  - {f}")
+    print(f"\nKeccak256 hash:")
+    print(f"  {hash_hex}")
+    print(f"\nThis is the skill's unique fingerprint.")
+    print(f"Any change to any file changes the hash.")
+
+
+if __name__ == "__main__":
+    main()
