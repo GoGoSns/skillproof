@@ -30,14 +30,18 @@ skillproof/
 │   ├── test/
 │   │   ├── SkillRegistry.ts        ← 7 tests for SkillRegistry
 │   │   └── Lock.ts                 ← 8 tests for Lock (boilerplate)
-│   ├── ignition/modules/Lock.ts    ← Ignition deployment module (Lock only)
+│   ├── ignition/modules/
+│   │   ├── Lock.ts                 ← Ignition deploy module (Hardhat boilerplate)
+│   │   └── SkillRegistry.ts        ← Ignition deploy module for SkillRegistry ★
+│   ├── .env.example                ← env template (PRIVATE_KEY)
 │   └── artifacts/                  ← compiled ABIs + bytecode (git-ignored)
 │
 ├── hermes-skill/                   ← Hermes skill package root
 │   ├── DESCRIPTION.md              ← skill pack description for Hermes
 │   └── skillproof/                 ← the actual Hermes skill
 │       ├── SKILL.md                ← Hermes skill manifest (name, version, commands)
-│       ├── .env                    ← secrets (Pinata JWT, private key, contract addr)
+│       ├── .env                    ← secrets (Pinata JWT, private key, contract addr) — git-ignored
+│       ├── .env.example            ← env template (commit this, not .env)
 │       ├── hash.py                 ← compute deterministic keccak256 of a skill folder
 │       ├── register.py             ← IPFS upload + mock registry write (→ real contract)
 │       ├── verify.py               ← query registry and print authorship report
@@ -183,9 +187,10 @@ already — verify before every commit.
    (wallet: `0xA8DBF18e67779C7B7dC839370B85940FF506185d`)
 
 2. **Deploy SkillRegistry to Base Sepolia**
-   - Add network config to `contracts/hardhat.config.ts` (Base Sepolia RPC, dev private key)
-   - `cd contracts && npx hardhat run scripts/deploy.ts --network base-sepolia`
-   - Save the deployed address to `.env` as `SKILLPROOF_CONTRACT_ADDRESS`
+   - Copy `contracts/.env.example` → `contracts/.env` and set `PRIVATE_KEY`
+   - `cd contracts && npm install` (installs dotenv)
+   - `npx hardhat ignition deploy ignition/modules/SkillRegistry.ts --network baseSepolia`
+   - Save the deployed address to `hermes-skill/skillproof/.env` as `SKILLPROOF_CONTRACT_ADDRESS`
 
 3. **Wire register.py and verify.py to the real contract**
    - Replace `mock_registry` calls with `viem` or `web3.py` calls to `SkillRegistry.registerSkill()`
