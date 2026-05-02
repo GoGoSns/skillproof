@@ -46,7 +46,7 @@ SkillProof solves all of this with a single cryptographic primitive: **content h
 │                           │          └───────────┬───────────────┘ │
 │                      content_hash                │                  │
 │                           │          ┌───────────▼───────────────┐ │
-│                           │          │    Base Sepolia            │ │
+│                           │          │  Ethereum Sepolia          │ │
 │                           │          │  ┌─────────────────────┐  │ │
 │                           │          │  │   SkillRegistry.sol │  │ │
 │                           │          │  │                     │  │ │
@@ -81,16 +81,45 @@ ipfs://bafkreie3teph2lonn7p4ny6kf7swlxun5avt5gfob45lnmxydk5ubzq6te
 
 ---
 
+## Live Deployment
+
+SkillProof is deployed and live on Ethereum Sepolia testnet.
+
+### Smart Contract
+
+| | |
+|---|---|
+| **Network** | Ethereum Sepolia |
+| **Contract Address** | `0x9BaA24c3f0298423B6410C7b3a4b8Bc4B1c6919c` |
+| **Etherscan** | [View Contract](https://sepolia.etherscan.io/address/0x9BaA24c3f0298423B6410C7b3a4b8Bc4B1c6919c) |
+
+### First On-Chain Skill Registration
+
+| | |
+|---|---|
+| **Transaction** | `0x9d3425ac760d5a583c3162cf1fb3a5d9d1a8f3340423b894058a04bd6587a85b` |
+| **Block** | 10773385 |
+| **Etherscan** | [View Transaction](https://sepolia.etherscan.io/tx/0x9d3425ac760d5a583c3162cf1fb3a5d9d1a8f3340423b894058a04bd6587a85b) |
+
+### IPFS Skill Content
+
+| | |
+|---|---|
+| **CID** | `bafkreie3teph2lonn7p4ny6kf7swlxun5avt5gfob45lnmxydk5ubzq6te` |
+| **Gateway** | [View on Pinata](https://gateway.pinata.cloud/ipfs/bafkreie3teph2lonn7p4ny6kf7swlxun5avt5gfob45lnmxydk5ubzq6te) |
+
+---
+
 ## Tech Stack
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| Smart Contract | Solidity 0.8.28 | On-chain registry (Base Sepolia) |
+| Smart Contract | Solidity 0.8.28 | On-chain registry (Ethereum Sepolia) |
 | Contract Tooling | Hardhat 2.28 + viem | Compile, test, deploy |
 | Content Hashing | Python + eth_utils keccak256 | Deterministic skill fingerprint |
 | Decentralized Storage | IPFS via Pinata | Immutable skill content archive |
 | Python Runtime | Python 3.12 | Hermes skill scripts |
-| Blockchain Network | Base Sepolia (testnet) | Low-cost EVM chain |
+| Blockchain Network | Ethereum Sepolia (testnet) | Low-cost EVM chain |
 
 ---
 
@@ -186,7 +215,7 @@ Key invariant: once a `contentHash` is registered, it **cannot be overwritten**.
 - Node.js 20+
 - Python 3.12+
 - A [Pinata](https://pinata.cloud) account (free tier is enough)
-- A funded Base Sepolia wallet (get ETH from [Base Sepolia faucet](https://www.alchemy.com/faucets/base-sepolia))
+- A funded Ethereum Sepolia wallet (get ETH from [Ethereum Sepolia faucet](https://www.alchemy.com/faucets/base-sepolia))
 
 ### 1. Install contract dependencies
 
@@ -296,7 +325,7 @@ Then ask Hermes:
 ## Roadmap
 
 ### v0.1.0 — Hackathon Submission
-- [x] `SkillRegistry.sol` smart contract (Base Sepolia)
+- [x] `SkillRegistry.sol` smart contract
 - [x] Deterministic keccak256 content hashing (`hash.py`)
 - [x] IPFS upload via Pinata (`register.py`)
 - [x] Authorship verification (`verify.py`)
@@ -306,7 +335,9 @@ Then ask Hermes:
 - [x] Hermes skill manifest (`SKILL.md`)
 
 ### v0.2.0 — Post-Hackathon
-- [ ] Live Base Sepolia deployment (real on-chain calls via web3.py)
+- [x] Deploy to Ethereum Sepolia
+- [x] Wire register.py and verify.py to real contract
+- [x] First on-chain skill registration
 - [ ] Skill evolution chains — link v2 to its v1 origin (`parentHash`)
 - [ ] BaseScan verification link in registration output
 - [ ] CLI tool: `skillproof register / verify / history`
