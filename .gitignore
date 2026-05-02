@@ -37,3 +37,17 @@ venv/
 
 # SkillProof receipts (generated, not committed)
 proof/
+
+# local agent/editor state
+.claude/
+**/.claude/
+
+# temp backups
+*.bak
+
+# hardhat ignition deployment artifacts
+contracts/ignition/deployments/
+
+# local debug scripts
+hermes-skill/skillproof/chain_check.py
+hermes-skill/skillproof/run_live_check.py
