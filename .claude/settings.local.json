@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Read(///wsl.localhost/Ubuntu-24.04/home/gokmen/skillproof/**)",
+      "Bash(npm install *)",
+      "Read(///wsl.localhost/Ubuntu-24.04/mnt/**)",
+      "Read(///wsl.localhost/Ubuntu-24.04//**)",
+      "PowerShell(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/gokmen/skillproof/contracts && npm install 2>&1 | tail -5\")",
+      "PowerShell(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/gokmen/skillproof/contracts && /usr/bin/env npm install 2>&1 | tail -8\" 2>&1)",
+      "PowerShell(wsl -d Ubuntu-24.04 -- bash -c \"which npm && npm --version\" 2>&1)",
+      "PowerShell(wsl -d Ubuntu-24.04 -- bash --login -c \"cd /home/gokmen/skillproof/contracts && which npm && npm install\" 2>&1)",
+      "Bash(ls *)"
+    ]
+  }
+}
