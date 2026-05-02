@@ -42,7 +42,7 @@ Every `validate` call returns one of four verdicts:
 |---|---|
 | `TRUSTED_ORIGIN` | Hash found on-chain. Authorship cryptographically verified. |
 | `UNCLAIMED_ARTIFACT` | No on-chain attestation. Anyone could claim authorship. |
-| `TAMPERED_COPY` | Receipt exists but current hash does not match attested hash (modified after attestation). |
+| `HASH_MISMATCH` | Receipt exists but current hash does not match attested hash (modified after attestation). |
 | `CONFLICTING_CLAIMS` | Reserved for v0.2.0 (multi-author lineage disputes). |
 
 ## Architecture
@@ -106,7 +106,7 @@ Copy `.env.example` to `.env` and fill in:
 ```dotenv
 PINATA_JWT=your_pinata_jwt_here
 SKILLPROOF_PRIVATE_KEY=your_sepolia_wallet_private_key_here
-SKILLPROOF_RPC_URL=https://rpc.sepolia.org
+SKILLPROOF_RPC_URL=https://sepolia.gateway.tenderly.co
 SKILLPROOF_CONTRACT_ADDRESS=0x9BaA24c3f0298423B6410C7b3a4b8Bc4B1c6919c
 ```
 

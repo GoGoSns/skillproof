@@ -73,7 +73,7 @@ The skill's keccak256 hash was found on the SkillRegistry contract. The author w
 ### `UNCLAIMED_ARTIFACT`
 No on-chain record exists for this skill hash. This skill has never been attested. Anyone could claim authorship. Run `attest.py` to stake your claim.
 
-### `TAMPERED_COPY`
+### `HASH_MISMATCH`
 A `proof/receipt.json` exists claiming this skill was previously attested, but the current content hash no longer matches the attested hash. The skill was modified after its original attestation. This is the most important verdict — it catches silent modifications.
 
 ### `CONFLICTING_CLAIMS` *(v0.2.0)*
@@ -285,7 +285,7 @@ Badge (copy to your skill README):
 **Required environment variables:**
 - `PINATA_JWT` — Pinata API key
 - `SKILLPROOF_PRIVATE_KEY` — Sepolia wallet private key (needs test ETH)
-- `SKILLPROOF_RPC_URL` — Ethereum Sepolia RPC (default: `https://rpc.sepolia.org`)
+- `SKILLPROOF_RPC_URL` — Ethereum Sepolia RPC (default: `https://sepolia.gateway.tenderly.co`)
 - `SKILLPROOF_CONTRACT_ADDRESS` — default: `0x9BaA24c3f0298423B6410C7b3a4b8Bc4B1c6919c`
 
 ---
@@ -300,7 +300,7 @@ python3 validate.py /path/to/skill-folder
 1. Computes local keccak256 hash
 2. Calls `getSkill(hash)` on the live Sepolia contract
 3. Scans SkillRegistered event logs for the transaction hash
-4. Determines trust verdict (TRUSTED_ORIGIN / UNCLAIMED_ARTIFACT / TAMPERED_COPY)
+4. Determines trust verdict (TRUSTED_ORIGIN / UNCLAIMED_ARTIFACT / HASH_MISMATCH)
 5. Saves `proof/receipt.json`
 6. Prints Skill Passport
 
@@ -311,7 +311,7 @@ python3 validate.py /path/to/skill-folder
 Is hash on-chain?
   ├── YES → TRUSTED_ORIGIN
   └── NO → Does proof/receipt.json exist for this path?
-             ├── YES, different hash in receipt → TAMPERED_COPY
+             ├── YES, different hash in receipt → HASH_MISMATCH
              └── NO / same hash → UNCLAIMED_ARTIFACT
 ```
 
@@ -409,7 +409,7 @@ Example (this project's own badge):
 | Threat | Mitigation |
 |---|---|
 | Authorship forgery | Only the wallet that called `registerSkill` is recorded. Cannot be changed. |
-| Silent modification | Any change to any file changes the hash → `TAMPERED_COPY` verdict |
+| Silent modification | Any change to any file changes the hash → `HASH_MISMATCH` verdict |
 | Double-registration | Contract reverts `"Skill already registered"` for any previously seen hash |
 | Secret leaks | `.env`, `.venv`, `proof/` excluded from hashing algorithm |
 | Replay attacks | `block.timestamp` is stored; Ethereum block timestamps are trustless |
@@ -497,7 +497,7 @@ Once installed, ask Hermes any of the following:
 | *"Check skill authenticity"* | Same as above |
 | *"Show skill passport"* | Runs `validate.py`, prints full passport |
 | *"Is this skill original?"* | Returns `TRUSTED_ORIGIN` or `UNCLAIMED_ARTIFACT` |
-| *"Was this skill tampered with?"* | Checks for `TAMPERED_COPY` verdict |
+| *"Was this skill tampered with?"* | Checks for `HASH_MISMATCH` verdict |
 | *"Get a provenance badge for my skill"* | Runs `attest.py`, prints badge markdown |
 
 ### Workflow example
@@ -563,7 +563,7 @@ skillproof/
 - [x] IPFS upload via Pinata (`attest.py`)
 - [x] Live Ethereum Sepolia contract at `0x9BaA24c3f0298423B6410C7b3a4b8Bc4B1c6919c`
 - [x] Real contract queries in `validate.py` via web3.py
-- [x] Trust verdict taxonomy: `TRUSTED_ORIGIN`, `UNCLAIMED_ARTIFACT`, `TAMPERED_COPY`
+- [x] Trust verdict taxonomy: `TRUSTED_ORIGIN`, `UNCLAIMED_ARTIFACT`, `HASH_MISMATCH`
 - [x] Skill Passport with `proof/receipt.json`
 - [x] Badge generator (shields.io markdown)
 - [x] 15 passing Hardhat tests

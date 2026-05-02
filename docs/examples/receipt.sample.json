@@ -1,0 +1,24 @@
+{
+  "verdict": "TRUSTED_ORIGIN",
+  "passport": {
+    "identity": "0xd7f3a8c9e1b2f4a5d6e7f8091a2b3c4d5e6f7081920a1b2c3d4e5f607182930",
+    "author": "0xA8DBF18e67779C7B7dC839370B85940FF506185d",
+    "born": "2026-05-01T14:32:00+00:00",
+    "network": "sepolia",
+    "ipfsResidence": "bafkreie3teph2lonn7p4ny6kf7swlxun5avt5gfob45lnmxydk5ubzq6te",
+    "trustLevel": "TRUSTED_ORIGIN",
+    "parents": "none (original work)",
+    "children": "0 forks detected"
+  },
+  "evidence": {
+    "contractAddress": "0x9BaA24c3f0298423B6410C7b3a4b8Bc4B1c6919c",
+    "transactionHash": "0x9d3425ac760d5a583c3162cf1fb3a5d9d1a8f3340423b894058a04bd6587a85b",
+    "etherscanUrl": "https://sepolia.etherscan.io/tx/0x9d3425ac760d5a583c3162cf1fb3a5d9d1a8f3340423b894058a04bd6587a85b",
+    "ipfsGateway": "https://gateway.pinata.cloud/ipfs/bafkreie3teph2lonn7p4ny6kf7swlxun5avt5gfob45lnmxydk5ubzq6te",
+    "blockNumber": 10773385
+  },
+  "meta": {
+    "toolVersion": "skillproof-v0.1.0",
+    "generatedAt": "2026-05-01T14:32:15.482103+00:00"
+  }
+}

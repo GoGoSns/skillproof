@@ -5,7 +5,7 @@ a skill's trust verdict. Four possible outcomes:
 
   TRUSTED_ORIGIN     — Hash found on-chain, authorship cryptographically verified
   UNCLAIMED_ARTIFACT — No on-chain attestation; anyone could claim authorship
-  TAMPERED_COPY      — Receipt exists but local hash no longer matches (modified)
+  HASH_MISMATCH      — Receipt exists but local hash no longer matches (modified)
   CONFLICTING_CLAIMS — Reserved for v0.2.0 (multi-author lineage disputes)
 
 Usage:
@@ -30,7 +30,7 @@ CONTRACT_ADDRESS = os.getenv(
     "SKILLPROOF_CONTRACT_ADDRESS",
     "0x9BaA24c3f0298423B6410C7b3a4b8Bc4B1c6919c",
 )
-RPC_URL = os.getenv("SKILLPROOF_RPC_URL", "https://rpc.sepolia.org")
+RPC_URL = os.getenv("SKILLPROOF_RPC_URL", "https://sepolia.gateway.tenderly.co")
 CHAIN_ID = 11155111
 
 # keccak256("SkillRegistered(bytes32,address,string,uint256)")
@@ -123,7 +123,7 @@ def determine_verdict(is_on_chain: bool, local_hash: str, local_receipt: dict | 
     if local_receipt:
         receipt_hash = local_receipt.get("passport", {}).get("identity")
         if receipt_hash and receipt_hash != local_hash:
-            return "TAMPERED_COPY"
+            return "HASH_MISMATCH"
     return "UNCLAIMED_ARTIFACT"
 
 
@@ -196,7 +196,7 @@ def print_passport(
         color = GREEN
         symbol = "✓"
         verdict_desc = "Authorship cryptographically verified on Ethereum Sepolia"
-    elif verdict == "TAMPERED_COPY":
+    elif verdict == "HASH_MISMATCH":
         color = RED
         symbol = "✗"
         verdict_desc = "Skill modified after its original on-chain attestation"
@@ -245,7 +245,7 @@ def print_passport(
         if block_number:
             print(f"  {DIM}Block        {block_number}{RESET}")
 
-    elif verdict == "TAMPERED_COPY":
+    elif verdict == "HASH_MISMATCH":
         print(f"  {BOLD}TRUST    {RESET}    {color}{BOLD}{verdict} {symbol}{RESET}")
         print()
         print(f"  {RED}WARNING: A receipt exists for this skill path but the{RESET}")
@@ -309,7 +309,7 @@ def main() -> None:
             if receipt_hash == local_hash and local_receipt.get("verdict") == "TRUSTED_ORIGIN":
                 verdict = "TRUSTED_ORIGIN"
             elif receipt_hash and receipt_hash != local_hash:
-                verdict = "TAMPERED_COPY"
+                verdict = "HASH_MISMATCH"
         receipt_path = save_receipt(
             skill_folder, verdict, local_hash, None, None, None, None, None
         )

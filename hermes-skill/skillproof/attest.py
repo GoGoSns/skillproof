@@ -27,7 +27,7 @@ CONTRACT_ADDRESS = os.getenv(
     "SKILLPROOF_CONTRACT_ADDRESS",
     "0x9BaA24c3f0298423B6410C7b3a4b8Bc4B1c6919c",
 )
-RPC_URL = os.getenv("SKILLPROOF_RPC_URL", "https://rpc.sepolia.org")
+RPC_URL = os.getenv("SKILLPROOF_RPC_URL", "https://sepolia.gateway.tenderly.co")
 PINATA_PIN_JSON = "https://api.pinata.cloud/pinning/pinJSONToIPFS"
 CHAIN_ID = 11155111  # Ethereum Sepolia
 
