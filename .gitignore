@@ -34,3 +34,6 @@ venv/
 
 # Hermes
 .hermes/
+
+# SkillProof receipts (generated, not committed)
+proof/
